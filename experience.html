@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Experience | Jairaj Sharma</title>
+  <meta name="description" content="Experience of Jairaj Sharma — Virginia Tech Computer Science student." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div id="scrollProgress" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Home">
+      <span class="brand-mark" aria-hidden="true">VT</span>
+      <span class="brand-text">CS Portfolio</span>
+    </a>
+
+    <nav class="nav" aria-label="Primary navigation">
+      <button id="menuBtn" class="icon-btn" aria-label="Open menu" aria-expanded="false">
+        <span class="hamburger" aria-hidden="true"></span>
+      </button>
+
+      <div id="navLinks" class="nav-links" data-open="false">
+        <a href="about.html">About</a>
+        <a href="projects.html">Projects</a>
+        <a href="experience.html" aria-current="page">Experience</a>
+        <a href="skills.html">Skills</a>
+        <a href="contact.html">Contact</a>
+      </div>
+
+      <button id="themeBtn" class="icon-btn" aria-label="Toggle theme" title="Toggle theme">
+        <span aria-hidden="true">◑</span>
+      </button>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="section">
+      <div class="section-head">
+        <h2>Experience</h2>
+        <p>Focus on outcomes, not duties. Use numbers when possible.</p>
+      </div>
+
+      <div class="timeline">
+        <article class="card timeline-item">
+          <div class="timeline-top">
+            <h3>Data Science Intern • Company</h3>
+            <span class="muted">Summer 2025</span>
+          </div>
+          <ul class="list">
+            <li>Built a pipeline to clean and join 700+ company records; reduced manual review by 40%.</li>
+            <li>Delivered insights dashboard for stakeholders; improved decision turnaround by 2 days.</li>
+          </ul>
+        </article>
+
+        <article class="card timeline-item">
+          <div class="timeline-top">
+            <h3>Research Assistant • Lab / Group</h3>
+            <span class="muted">2024–2026</span>
+          </div>
+          <ul class="list">
+            <li>Implemented analysis scripts; generated proliferation curves for experiments and summarized results.</li>
+            <li>Validated models with reproducible notebooks; improved repeatability across runs.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>
+      © <span id="year"></span> Jairaj Sharma • Built with HTML/CSS/JS •
+      <a class="link" href="index.html">Home</a>
+    </p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

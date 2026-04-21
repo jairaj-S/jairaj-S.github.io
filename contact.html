@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact | Jairaj Sharma</title>
+  <meta name="description" content="Contact Jairaj Sharma — Virginia Tech Computer Science student." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div id="scrollProgress" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Home">
+      <span class="brand-mark" aria-hidden="true">VT</span>
+      <span class="brand-text">CS Portfolio</span>
+    </a>
+
+    <nav class="nav" aria-label="Primary navigation">
+      <button id="menuBtn" class="icon-btn" aria-label="Open menu" aria-expanded="false">
+        <span class="hamburger" aria-hidden="true"></span>
+      </button>
+
+      <div id="navLinks" class="nav-links" data-open="false">
+        <a href="about.html">About</a>
+        <a href="projects.html">Projects</a>
+        <a href="experience.html">Experience</a>
+        <a href="skills.html">Skills</a>
+        <a href="contact.html" aria-current="page">Contact</a>
+      </div>
+
+      <button id="themeBtn" class="icon-btn" aria-label="Toggle theme" title="Toggle theme">
+        <span aria-hidden="true">◑</span>
+      </button>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="section">
+      <div class="section-head">
+        <h2>Contact</h2>
+        <p>If you're interested in what you see, feel free to reach out any time!</p>
+      </div>
+
+      <div class="grid two">
+        <article class="card">
+          <h3>Links</h3>
+          <ul class="list">
+            <li>
+              School Email:
+              <button class="inline-btn copy-email" data-email="sharmaj@vt.edu">
+                sharmaj@vt.edu (copy)
+              </button>
+              <span class="toast" role="status" aria-live="polite"></span>
+            </li>
+            <li>
+              Personal Email:
+              <button class="inline-btn copy-email" data-email="jairaj9ns@gmail.com">
+                jairaj9ns@gmail.com (copy)
+              </button>
+              <span class="toast" role="status" aria-live="polite"></span>
+            </li>
+            <li>GitHub: <a class="link" href="https://github.com/jairaj-S" target="_blank" rel="noreferrer">github.com/jairaj-S</a></li>
+            <li>LinkedIn: <a class="link" href="#" target="_blank" rel="noreferrer">linkedin.com/in/yourhandle</a></li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Message</h3>
+          <form id="contactForm" novalidate>
+            <label class="field">
+              <span>Name</span>
+              <input name="name" type="text" autocomplete="name" required minlength="2" />
+            </label>
+            <label class="field">
+              <span>Email</span>
+              <input name="email" type="email" autocomplete="email" required />
+            </label>
+            <label class="field">
+              <span>Message</span>
+              <textarea name="message" rows="4" required minlength="10"></textarea>
+            </label>
+
+            <div class="form-row">
+              <button class="btn primary" type="submit">Send</button>
+              <p class="muted" id="formStatus" aria-live="polite"></p>
+            </div>
+          </form>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>
+      © <span id="year"></span> Jairaj Sharma • Built with HTML/CSS/JS •
+      <a class="link" href="index.html">Home</a>
+    </p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
