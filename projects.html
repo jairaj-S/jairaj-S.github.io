@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Projects | Jairaj Sharma</title>
+  <meta name="description" content="Projects by Jairaj Sharma — Virginia Tech Computer Science student." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div id="scrollProgress" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Home">
+      <span class="brand-mark" aria-hidden="true">VT</span>
+      <span class="brand-text">CS Portfolio</span>
+    </a>
+
+    <nav class="nav" aria-label="Primary navigation">
+      <button id="menuBtn" class="icon-btn" aria-label="Open menu" aria-expanded="false">
+        <span class="hamburger" aria-hidden="true"></span>
+      </button>
+
+      <div id="navLinks" class="nav-links" data-open="false">
+        <a href="about.html">About</a>
+        <a href="projects.html" aria-current="page">Projects</a>
+        <a href="experience.html">Experience</a>
+        <a href="skills.html">Skills</a>
+        <a href="contact.html">Contact</a>
+      </div>
+
+      <button id="themeBtn" class="icon-btn" aria-label="Toggle theme" title="Toggle theme">
+        <span aria-hidden="true">◑</span>
+      </button>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="section">
+      <div class="section-head">
+        <h2>Projects</h2>
+        <p>Show 3–6 strong projects. Each should have: problem, approach, result, tech stack, link.</p>
+      </div>
+
+      <div class="filters">
+        <button class="chip is-active" data-filter="all">All</button>
+        <button class="chip" data-filter="web">Web</button>
+        <button class="chip" data-filter="ml">ML/Data</button>
+        <button class="chip" data-filter="systems">Systems</button>
+      </div>
+
+      <div class="grid three" id="projectGrid">
+        <article class="card project" data-tags="web">
+          <div class="project-top">
+            <h3>Campus Event Finder</h3>
+            <span class="pill">Web</span>
+          </div>
+          <p>
+            A responsive web app that searches events, filters by category, and saves favorites.
+          </p>
+          <ul class="mini">
+            <li><strong>Stack:</strong> HTML, CSS, JS</li>
+            <li><strong>Result:</strong> "Reduced search time by X"</li>
+          </ul>
+          <div class="card-actions">
+            <a class="link" href="#" target="_blank" rel="noreferrer">Live</a>
+            <a class="link" href="#" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </article>
+
+        <article class="card project" data-tags="ml">
+          <div class="project-top">
+            <h3>Stock Signal Explorer</h3>
+            <span class="pill">ML/Data</span>
+          </div>
+          <p>
+            An analysis tool that engineers features and evaluates baseline predictive models with clean reporting.
+          </p>
+          <ul class="mini">
+            <li><strong>Stack:</strong> Python, Pandas, Sklearn</li>
+            <li><strong>Result:</strong> "Improved baseline AUC from X → Y"</li>
+          </ul>
+          <div class="card-actions">
+            <a class="link" href="#" target="_blank" rel="noreferrer">Report</a>
+            <a class="link" href="#" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </article>
+
+        <article class="card project" data-tags="systems">
+          <div class="project-top">
+            <h3>Memory Allocator (C)</h3>
+            <span class="pill">Systems</span>
+          </div>
+          <p>
+            A custom allocator supporting malloc/free with coalescing, alignment, and stress-test harness.
+          </p>
+          <ul class="mini">
+            <li><strong>Stack:</strong> C, Linux, GDB</li>
+            <li><strong>Result:</strong> "Handled N ops/sec under tests"</li>
+          </ul>
+          <div class="card-actions">
+            <a class="link" href="#" target="_blank" rel="noreferrer">Write-up</a>
+            <a class="link" href="#" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>
+      © <span id="year"></span> Jairaj Sharma • Built with HTML/CSS/JS •
+      <a class="link" href="index.html">Home</a>
+    </p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
