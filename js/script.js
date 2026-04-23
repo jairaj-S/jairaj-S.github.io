@@ -310,11 +310,18 @@ if (progress) {
 })();
 
 // ===== Sketchbook doodles =====
-// Scatters transparent PNG sketches from images/transparent_images/ as
-// marginalia behind the main content. Inserted before <main> so DOM order
-// keeps them behind positioned cards without needing z-index gymnastics.
-// Each doodle gets a staggered --doodle-delay so they appear one at a time,
-// sketched in via the CSS doodle-in clip-path sweep.
+// Scatters transparent PNG sketches from images/transparent_images/ behind
+// the main content. Two collision concerns are enforced by rejection
+// sampling (each candidate position must pass both before it's kept):
+//
+//   1. Text that sits directly on the paper (section-head h2/p, group
+//      titles, hero-content) is measured at runtime with offsetTop/Height,
+//      so if you edit that text later — changing length, size, adding a
+//      line — the doodles automatically avoid the new bounding box.
+//   2. Previously-placed doodles; no two can land on top of each other.
+//
+// DOM order (fragment inserted before <main>) keeps doodles behind
+// positioned cards without needing z-index gymnastics.
 (function initDoodles() {
   // Curated pool: sketches that read well as background decoration.
   // (Skipping social-logo PNGs and the "hi there" one already in the hero.)
@@ -333,54 +340,129 @@ if (progress) {
     "walkingInPark",
   ];
   const COUNT = 5;
+  const MAX_ATTEMPTS = 40;  // per-doodle retry budget before giving up
+  const MARGIN = 14;        // min clear pixels between a doodle and any other rect
+  const TOP_BUFFER = 100;   // clear the sticky site header area
 
+  // ---------- Document measurements ----------
   const docHeight = Math.max(
     document.documentElement.scrollHeight,
     document.body.scrollHeight,
     window.innerHeight
   );
+  const pageWidth = document.body.clientWidth || window.innerWidth;
 
+  // ---------- No-doodle zones ----------
+  // Uses offsetTop/offsetLeft instead of getBoundingClientRect so the
+  // measurement isn't skewed by the `translate: 0 28px` starting state of
+  // the pe-enter animation — offset values are layout-only, not transformed.
+  function absLayoutRect(el) {
+    let top = 0;
+    let left = 0;
+    let node = el;
+    while (node && node !== document.body) {
+      top += node.offsetTop || 0;
+      left += node.offsetLeft || 0;
+      node = node.offsetParent;
+    }
+    return {
+      top: top - MARGIN,
+      left: left - MARGIN,
+      right: left + el.offsetWidth + MARGIN,
+      bottom: top + el.offsetHeight + MARGIN,
+    };
+  }
+
+  // Anything in this list is a hard "don't overlap" zone. Extend with more
+  // selectors if future pages add text that sits directly on the paper.
+  const FORBIDDEN_SELECTOR = [
+    ".section-head",     // h2 + subtitle on every non-hero page
+    ".tl-group-title",   // EXPERIENCE label
+    ".group-title",      // EDUCATION / SKILLS labels
+    ".hero-content",     // everything in the landing hero
+  ].join(", ");
+
+  const forbidden = [];
+  document.querySelectorAll(FORBIDDEN_SELECTOR).forEach((el) => {
+    forbidden.push(absLayoutRect(el));
+  });
+
+  // ---------- Collision helpers ----------
+  function overlaps(a, b) {
+    return !(
+      a.right < b.left ||
+      a.left > b.right ||
+      a.bottom < b.top ||
+      a.top > b.bottom
+    );
+  }
+  function collidesAny(candidate, list) {
+    for (const r of list) {
+      if (overlaps(candidate, r)) return true;
+    }
+    return false;
+  }
+
+  // ---------- Placement ----------
   const picks = [...POOL]
     .sort(() => Math.random() - 0.5)
     .slice(0, Math.min(COUNT, POOL.length));
 
-  const frag = document.createDocumentFragment();
+  const placed = [];                 // bounding boxes of accepted doodles
+  const doodles = [];                // final placement params, in draw order
   const bandH = docHeight / picks.length;
 
   picks.forEach((name, i) => {
+    let params = null;
+    for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+      const jitter = 0.05 + Math.random() * 0.85;
+      const rawTop = Math.floor(i * bandH + bandH * jitter);
+      const top = Math.max(TOP_BUFFER, rawTop);
+      const side = Math.random() < 0.5 ? "left" : "right";
+      const offset = Math.floor(8 + Math.random() * 130);   // 8–138 px
+      const width = 200 + Math.floor(Math.random() * 120);  // 200–320 px
+      const rot = Math.random() * 28 - 14;                  // -14 → +14 deg
+      const delay = 700 + i * 500 + Math.floor(Math.random() * 200);
+
+      // Approximate bounding box. Sketches are roughly square, so est. height
+      // = width; + 15% buffer on all sides covers rotation overshoot.
+      const buf = width * 0.15;
+      const leftPx = side === "left" ? offset : pageWidth - offset - width;
+      const candidate = {
+        top: top - buf,
+        left: leftPx - buf,
+        right: leftPx + width + buf,
+        bottom: top + width + buf,
+      };
+
+      if (!collidesAny(candidate, forbidden) && !collidesAny(candidate, placed)) {
+        params = { name, top, side, offset, width, rot, delay };
+        placed.push(candidate);
+        break;
+      }
+    }
+    // If we couldn't place this one after MAX_ATTEMPTS, we just skip it —
+    // better to have 4 well-placed sketches than 5 with one on top of a
+    // heading.
+    if (params) doodles.push(params);
+  });
+
+  // ---------- Render ----------
+  const frag = document.createDocumentFragment();
+  doodles.forEach((d) => {
     const img = document.createElement("img");
     img.className = "doodle";
-    img.src = `images/transparent_images/${encodeURIComponent(name)}.png`;
+    img.src = `images/transparent_images/${encodeURIComponent(d.name)}.png`;
     img.alt = "";
     img.setAttribute("aria-hidden", "true");
     img.loading = "lazy";
     img.decoding = "async";
 
-    // Vertical: deep jitter inside this doodle's band (5–90%) so the vertical
-    // rhythm doesn't look like a mechanical 5-step ladder
-    const jitter = 0.05 + Math.random() * 0.85;
-    const top = Math.floor(i * bandH + bandH * jitter);
-
-    // Horizontal: random side per doodle (no strict alternation) + wider
-    // inset range so some hug the margin and others float further inward
-    const side = Math.random() < 0.5 ? "left" : "right";
-    const offset = Math.floor(8 + Math.random() * 130); // 8–138 px
-
-    // Bigger than before — these are meant to be noticed, not whispered
-    const width = 200 + Math.floor(Math.random() * 120); // 200–320 px
-
-    // Rotation range: a little wider for more hand-scattered feel
-    const rot = (Math.random() * 28 - 14).toFixed(1);    // -14 → +14 deg
-
-    // Staggered appearance: first doodle at ~700ms, each subsequent one
-    // ~500ms later with a ±200ms jitter so it doesn't tick on a metronome
-    const delay = 700 + i * 500 + Math.floor(Math.random() * 200);
-
-    img.style.top = `${top}px`;
-    img.style[side] = `${offset}px`;
-    img.style.width = `${width}px`;
-    img.style.transform = `rotate(${rot}deg)`;
-    img.style.setProperty("--doodle-delay", `${delay}ms`);
+    img.style.top = `${d.top}px`;
+    img.style[d.side] = `${d.offset}px`;
+    img.style.width = `${d.width}px`;
+    img.style.transform = `rotate(${d.rot.toFixed(1)}deg)`;
+    img.style.setProperty("--doodle-delay", `${d.delay}ms`);
 
     frag.appendChild(img);
   });
