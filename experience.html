@@ -3,18 +3,29 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Experience | Jairaj Sharma</title>
-  <meta name="description" content="Experience of Jairaj Sharma — Virginia Tech Computer Science student." />
-  <link rel="stylesheet" href="styles.css" />
+  <title>Experience, Education &amp; Skills | Jairaj Sharma</title>
+  <meta name="description" content="Experience, education, and skills of Jairaj Sharma — Virginia Tech Computer Science student." />
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 
 <body>
+  <svg class="sketch-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden">
+    <filter id="sketch">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="3" seed="3" stitchTiles="stitch"/>
+      <feDisplacementMap in="SourceGraphic" scale="2.4"/>
+    </filter>
+    <filter id="sketch-soft">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="7" stitchTiles="stitch"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </svg>
+
   <div id="scrollProgress" aria-hidden="true"></div>
 
   <header class="site-header">
     <a class="brand" href="index.html" aria-label="Home">
       <span class="brand-mark" aria-hidden="true">VT</span>
-      <span class="brand-text">CS Portfolio</span>
+      <span class="brand-text">Jairaj Sharma</span>
     </a>
 
     <nav class="nav" aria-label="Primary navigation">
@@ -26,44 +37,121 @@
         <a href="about.html">About</a>
         <a href="projects.html">Projects</a>
         <a href="experience.html" aria-current="page">Experience</a>
-        <a href="skills.html">Skills</a>
         <a href="contact.html">Contact</a>
       </div>
 
-      <button id="themeBtn" class="icon-btn" aria-label="Toggle theme" title="Toggle theme">
-        <span aria-hidden="true">◑</span>
-      </button>
     </nav>
   </header>
 
   <main id="top">
     <section class="section">
       <div class="section-head">
-        <h2>Experience</h2>
-        <p>Focus on outcomes, not duties. Use numbers when possible.</p>
+        <h2>Experience, Education &amp; Skills</h2>
+        <p>My journey so far — roles, academics, and the tools I reach for.</p>
       </div>
 
-      <div class="timeline">
-        <article class="card timeline-item">
-          <div class="timeline-top">
-            <h3>Data Science Intern • Company</h3>
-            <span class="muted">Summer 2025</span>
+      <div class="tl">
+        <h3 class="tl-group-title">Experience</h3>
+
+        <div class="tl-item">
+          <div class="tl-date">Sep 2025 – Present</div>
+          <div class="tl-marker"><span class="tl-dot"></span></div>
+          <article class="card tl-card">
+            <h3>Undergraduate Research Assistant</h3>
+            <p class="tl-sub">Virginia Tech National Security Institute · Blacksburg, VA</p>
+            <ul class="list">
+              <li>Engineered programmatic UAS scenarios in a Virtual Testing Environment, emulating drone base-incursion events via Python API to support repeatable adversarial simulation.</li>
+              <li>Automated waypoint generation and telemetry capture (position, RF path loss, success metrics) for ground and aerial vehicles, enabling reproducible batch experiments across dozens of configurations.</li>
+              <li>Developed a parameterized experiment generator using PyYAML and SciPy with Latin Hypercube Sampling; built pandas/Matplotlib dashboards to track and analyze trial outcomes.</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Sep 2025 – Dec 2025</div>
+          <div class="tl-marker"><span class="tl-dot"></span></div>
+          <article class="card tl-card">
+            <h3>Student Concept Developer · Hacking For Defense</h3>
+            <p class="tl-sub">Virginia Tech · Blacksburg, VA</p>
+            <ul class="list">
+              <li>Selected as 1 of 10 students to lead concept development for single-pilot multi-drone swarm control, translating mission needs into system requirements and risk constraints.</li>
+              <li>Led stakeholder discovery with USAF leadership through structured interviews on base-incursion scenarios, surfacing key evaluation metrics (pilot workload, link latency) to prioritize solution paths.</li>
+              <li>Analyzed the command-and-control software stack, comparing ground-station workflows (Betaflight vs. MAVLink/QGroundControl) against FAA and DoD deployability constraints.</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date">Jun 2025 – Sep 2025</div>
+          <div class="tl-marker"><span class="tl-dot"></span></div>
+          <article class="card tl-card">
+            <h3>AI Solutions &amp; Government Bids Intern</h3>
+            <p class="tl-sub">Trinity Bridge Consulting Services · Nashua, NH</p>
+            <ul class="list">
+              <li>Documented end-to-end workflows for 9 ML prototypes across data collection, model training, and monitoring phases, standardizing handoff documentation for government proposal submissions.</li>
+              <li>Built a decision-tree classifier for illness diagnosis using Kaggle and DSLD API data; applied GridSearchCV for hyperparameter tuning and cross-validation to optimize model performance.</li>
+            </ul>
+          </article>
+        </div>
+
+      </div>
+
+      <h3 class="group-title">Education</h3>
+      <article class="card">
+        <h3>Virginia Tech</h3>
+        <p class="tl-sub">Finishing up my Bachelor's Degree in Computer Science · Current GPA 3.5 / 4.0 · Blacksburg, VA · Aug 2023 – May 2026</p>
+        <p><strong>Relevant Coursework:</strong> Operating Systems, Computer Organization, Programming Languages, Introduction to AI, Data Analytics &amp; Visualization, Data Structures &amp; Algorithms.</p>
+      </article>
+
+      <h3 class="group-title">Skills</h3>
+      <div class="grid two">
+        <article class="card">
+          <h3>Languages</h3>
+          <div class="badges">
+            <span class="badge">Python</span>
+            <span class="badge">C</span>
+            <span class="badge">Java</span>
+            <span class="badge">JavaScript</span>
+            <span class="badge">SQL</span>
+            <span class="badge">HTML/CSS</span>
           </div>
-          <ul class="list">
-            <li>Built a pipeline to clean and join 700+ company records; reduced manual review by 40%.</li>
-            <li>Delivered insights dashboard for stakeholders; improved decision turnaround by 2 days.</li>
-          </ul>
         </article>
 
-        <article class="card timeline-item">
-          <div class="timeline-top">
-            <h3>Research Assistant • Lab / Group</h3>
-            <span class="muted">2024–2026</span>
+        <article class="card">
+          <h3>Frameworks &amp; Tools</h3>
+          <div class="badges">
+            <span class="badge">FastAPI</span>
+            <span class="badge">Flask</span>
+            <span class="badge">React Native</span>
+            <span class="badge">Expo</span>
+            <span class="badge">Docker</span>
+            <span class="badge">Git/GitHub</span>
+            <span class="badge">Linux</span>
+            <span class="badge">REST APIs</span>
+            <span class="badge">YAML</span>
+            <span class="badge">JSON</span>
           </div>
-          <ul class="list">
-            <li>Implemented analysis scripts; generated proliferation curves for experiments and summarized results.</li>
-            <li>Validated models with reproducible notebooks; improved repeatability across runs.</li>
-          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Libraries</h3>
+          <div class="badges">
+            <span class="badge">Pandas</span>
+            <span class="badge">NumPy</span>
+            <span class="badge">Matplotlib</span>
+            <span class="badge">SciPy</span>
+            <span class="badge">Scikit-learn</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3>Specialized</h3>
+          <div class="badges">
+            <span class="badge">MAVLink</span>
+            <span class="badge">QGroundControl</span>
+            <span class="badge">OpenAI API</span>
+            <span class="badge">LiveKit</span>
+          </div>
         </article>
       </div>
     </section>
@@ -76,6 +164,6 @@
     </p>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="js/script.js"></script>
 </body>
 </html>

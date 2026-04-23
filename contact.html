@@ -5,16 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Contact | Jairaj Sharma</title>
   <meta name="description" content="Contact Jairaj Sharma — Virginia Tech Computer Science student." />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 
 <body>
+  <svg class="sketch-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden">
+    <filter id="sketch">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="3" seed="3" stitchTiles="stitch"/>
+      <feDisplacementMap in="SourceGraphic" scale="2.4"/>
+    </filter>
+    <filter id="sketch-soft">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="7" stitchTiles="stitch"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </svg>
+
   <div id="scrollProgress" aria-hidden="true"></div>
 
   <header class="site-header">
     <a class="brand" href="index.html" aria-label="Home">
       <span class="brand-mark" aria-hidden="true">VT</span>
-      <span class="brand-text">CS Portfolio</span>
+      <span class="brand-text">Jairaj Sharma</span>
     </a>
 
     <nav class="nav" aria-label="Primary navigation">
@@ -26,13 +37,9 @@
         <a href="about.html">About</a>
         <a href="projects.html">Projects</a>
         <a href="experience.html">Experience</a>
-        <a href="skills.html">Skills</a>
         <a href="contact.html" aria-current="page">Contact</a>
       </div>
 
-      <button id="themeBtn" class="icon-btn" aria-label="Toggle theme" title="Toggle theme">
-        <span aria-hidden="true">◑</span>
-      </button>
     </nav>
   </header>
 
@@ -40,7 +47,7 @@
     <section class="section">
       <div class="section-head">
         <h2>Contact</h2>
-        <p>If you're interested in what you see, feel free to reach out any time!</p>
+        <p>If you're interested in what you see, feel free to reach out any time.</p>
       </div>
 
       <div class="grid two">
@@ -48,21 +55,22 @@
           <h3>Links</h3>
           <ul class="list">
             <li>
-              School Email:
-              <button class="inline-btn copy-email" data-email="sharmaj@vt.edu">
-                sharmaj@vt.edu (copy)
+              Email:
+              <button class="inline-btn copy-email" data-email="sharma.jairajn@gmail.com">
+                sharma.jairajn@gmail.com (copy)
               </button>
               <span class="toast" role="status" aria-live="polite"></span>
             </li>
             <li>
-              Personal Email:
-              <button class="inline-btn copy-email" data-email="jairaj9ns@gmail.com">
-                jairaj9ns@gmail.com (copy)
+              Phone:
+              <button class="inline-btn copy-email" data-email="603-921-1481">
+                603-921-1481 (copy)
               </button>
               <span class="toast" role="status" aria-live="polite"></span>
             </li>
+            <li>LinkedIn: <a class="link" href="https://linkedin.com/in/jairajsharma" target="_blank" rel="noreferrer">linkedin.com/in/jairajsharma</a></li>
             <li>GitHub: <a class="link" href="https://github.com/jairaj-S" target="_blank" rel="noreferrer">github.com/jairaj-S</a></li>
-            <li>LinkedIn: <a class="link" href="#" target="_blank" rel="noreferrer">linkedin.com/in/yourhandle</a></li>
+            <li>Location: Blacksburg, VA • US Citizen</li>
           </ul>
         </article>
 
@@ -99,6 +107,6 @@
     </p>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="js/script.js"></script>
 </body>
 </html>

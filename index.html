@@ -5,10 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Jairaj Sharma | Virginia Tech CS Portfolio</title>
   <meta name="description" content="Portfolio website for Jairaj Sharma, Virginia Tech Computer Science student." />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <!-- Preload the hero portrait so it's ready by the time the page's pen-reveal
+       animation plays. Same file is used by <img> below (browser reuses the fetch). -->
+  <link rel="preload" as="image" href="images/profile.jpg" fetchpriority="high" />
 </head>
 
 <body>
+  <!-- Pencil-sketch filters used by CSS: `filter: url(#sketch)` / `#sketch-soft` -->
+  <svg class="sketch-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden">
+    <filter id="sketch">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="3" seed="3" stitchTiles="stitch"/>
+      <feDisplacementMap in="SourceGraphic" scale="2.4"/>
+    </filter>
+    <filter id="sketch-soft">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="7" stitchTiles="stitch"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </svg>
+
   <div id="scrollProgress" aria-hidden="true"></div>
 
   <header class="site-header">
@@ -26,34 +41,33 @@
         <a href="about.html">About</a>
         <a href="projects.html">Projects</a>
         <a href="experience.html">Experience</a>
-        <a href="skills.html">Skills</a>
         <a href="contact.html">Contact</a>
       </div>
 
-      <button id="themeBtn" class="icon-btn" aria-label="Toggle theme" title="Toggle theme">
-        <span aria-hidden="true">◑</span>
-      </button>
     </nav>
   </header>
 
   <main id="top">
     <section class="hero hero--simple section">
       <div class="hero-content">
-        <p class="tag">Virginia Tech • Computer Science</p>
+        <p class="tag">Virginia Tech • Computer Science • May 2026</p>
         <h1 class="title">
-          <div class="profile-image">
-            <img src="DSC_0544 copy.JPG" alt="Jairaj Sharma" />
+          <div class="profile-row">
+            <div class="profile-image">
+              <img src="images/profile.jpg" alt="Jairaj Sharma" fetchpriority="high" decoding="async" />
+            </div>
+            <img class="profile-sketch" src="images/transparent_images/SayingHi.png" alt="" decoding="async" />
           </div>
           Hi, I'm <span class="accent">Jairaj Sharma</span>.
           <br />
-          I build reliable software and data-driven systems.
+          I build ML tools, full-stack apps, and simulation software for research and defense.
         </h1>
 
         <div class="cta-row">
           <a class="btn primary" href="projects.html">View Projects</a>
           <a class="btn" href="about.html">About Me</a>
           <a class="btn" href="contact.html">Contact</a>
-          <a class="btn ghost" href="#" id="resumeLink">Resume (PDF)</a>
+          <a class="btn ghost" href="docs/Jairaj_Sharma_VirginiaTech.pdf" id="resumeLink">Resume (PDF)</a>
         </div>
       </div>
     </section>
@@ -66,6 +80,6 @@
     </p>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="js/script.js"></script>
 </body>
 </html>

@@ -1,0 +1,1154 @@
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Kalam:wght@400;700&display=swap");
+
+:root{
+    /* Notebook-paper palette — cream page, dark ink. Single theme (no toggle). */
+    --bg: #fdf9ec;
+    --panel: #ffffff;
+    --panel2: #ffffff;
+    --text: #10131a;
+    --muted: #475064;
+    --border: rgba(15,18,26,0.12);
+    --shadow: 0 14px 40px rgba(15,18,26,0.12);
+
+    /* VT-ish accent pair */
+    --accent: #7a1d2a;   /* maroon */
+    --accent2:#f57f20;   /* orange-ish */
+
+    /* Pencil / ink used by sketchy borders */
+    --pencil: #2a2e3a;        /* dark graphite, used on white card faces */
+    --ink: #1a1d26;           /* ink color for borders/rules on cream paper */
+    --ink-soft: rgba(26,29,38,0.75);
+
+    --radius: 8px;
+    --max: 1080px;
+
+    --font-body: "Kalam", "Patrick Hand", "Comic Sans MS", cursive;
+    --font-hand: "Caveat", "Kalam", cursive;
+  }
+  
+  *{ box-sizing: border-box; }
+  html{
+    scroll-behavior: smooth;
+    overscroll-behavior-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ===== Handwritten type + pencil-sketch borders =====
+     Headings use Caveat (flowy). Body, labels, and buttons use Kalam (tidy).
+     Borders come from ::before pseudo-elements passed through an SVG
+     feTurbulence/feDisplacementMap filter declared in each page (#sketch and
+     #sketch-soft) so straight edges wobble like a pencil stroke.
+  */
+  h1, h2, h3, h4, h5,
+  .title, .section-head h2,
+  .card h1, .card h2, .card h3, .card h4, .card h5,
+  .tl-card h3{
+    font-family: var(--font-hand);
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    line-height: 1.15;
+  }
+  .section-head h2{ font-size: 42px; }
+  .section-head p{ font-size: 17px; }
+  .card h3{ font-size: 26px; }
+
+  .tl-group-title, .group-title,
+  .btn, .chip, .badge, .pill, .fact-label, .fact-value,
+  .tag, .nav-links a, .brand-text,
+  input, textarea, .inline-btn{
+    font-family: var(--font-body);
+  }
+
+  /* Sketchy pencil border shared across bordered UI. Each host element gets
+     position:relative and transparent/no border, then ::before paints a
+     filter-distorted outline on top. */
+  .sketch-border{ position: relative; }
+  .sketch-border::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 2px solid currentColor;
+    border-radius: inherit;
+    filter: url(#sketch);
+    pointer-events: none;
+  }
+  body{
+    margin:0;
+    min-height: 100vh;
+    position: relative;   /* positioning context for scattered .doodle sketches */
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.55;
+    /* Cream notebook paper — blue ruled lines (parallaxed via --notebook-y on
+       scroll) and a red margin line ~72px from the left. */
+    background:
+      linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 31px,
+        rgba(70,120,200,0.32) 31px,
+        rgba(70,120,200,0.32) 32px
+      ),
+      linear-gradient(
+        to right,
+        transparent 72px,
+        rgba(184,29,42,0.70) 72px,
+        rgba(184,29,42,0.70) 74px,
+        transparent 74px
+      ),
+      var(--bg);
+    background-position: 0 var(--notebook-y, 0px), 0 0, 0 0;
+    background-size: 100% 32px, auto auto, auto auto;
+    background-repeat: repeat, no-repeat, no-repeat;
+    background-attachment: fixed;
+    color: var(--text);
+    overscroll-behavior-y: auto;
+  }
+  @media (max-width: 640px){
+    body{
+      /* Pull the red margin closer to the edge on narrow viewports */
+      background:
+        linear-gradient(
+          to bottom,
+          transparent 0,
+          transparent 31px,
+          rgba(70,120,200,0.32) 31px,
+          rgba(70,120,200,0.32) 32px
+        ),
+        linear-gradient(
+          to right,
+          transparent 40px,
+          rgba(184,29,42,0.70) 40px,
+          rgba(184,29,42,0.70) 42px,
+          transparent 42px
+        ),
+        var(--bg);
+      background-position: 0 var(--notebook-y, 0px), 0 0, 0 0;
+      background-size: 100% 32px, auto auto, auto auto;
+      background-repeat: repeat, no-repeat, no-repeat;
+      background-attachment: fixed;
+    }
+  }
+
+  /* Row that holds the framed photo + the waving stick-figure sketch. */
+  .profile-row{
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+    margin: 20px auto;
+    line-height: 0;
+  }
+  .profile-sketch{
+    display: block;
+    height: 150px;         /* match the framed photo's height */
+    width: auto;
+    /* Fade in once the PNG has decoded so it doesn't pop in late and out of
+       sync with the photo or the writing animation. */
+    opacity: 0;
+    transition: opacity 1100ms cubic-bezier(.35,.65,.35,1);
+  }
+  .profile-sketch.is-loaded{ opacity: 1; }
+  @media (max-width: 640px){
+    .profile-row{ flex-wrap: wrap; justify-content: center; gap: 12px; }
+    .profile-sketch{ height: 120px; }
+  }
+
+  .profile-image {
+    position: relative;
+    display: inline-block;
+    width: fit-content;
+    line-height: 0;        /* kill the extra baseline gap under <img> */
+    padding: 8px;          /* equal breathing room inside the frame on all sides */
+  }
+  .profile-image img {
+    display: block;
+    height: 150px;
+    width: auto;
+    border-radius: 4px;
+    position: relative;
+    z-index: 0;
+    /* Start hidden and fade in to match the pen-reveal on adjacent text.
+       JS adds .is-loaded once the image is actually decoded so we never
+       pop the image in mid-animation; matches pe-write's ease/duration. */
+    opacity: 0;
+    transition: opacity 1100ms cubic-bezier(.35,.65,.35,1);
+  }
+  .profile-image img.is-loaded{ opacity: 1; }
+  .profile-image::after {
+    content: "";
+    position: absolute;
+    inset: 0;              /* frame sits on the padding box -> even 8px gap all around */
+    border: 2.5px solid var(--ink);
+    border-radius: 6px;
+    filter: url(#sketch);
+    pointer-events: none;
+  }
+  
+  #scrollProgress{
+    position: fixed;
+    top:0; left:0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    z-index: 9999;
+  }
+  
+  /* Header */
+  .site-header{
+    position: sticky;
+    top:0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    background: rgba(253,249,236,0.72);
+    border-bottom: none;
+  }
+  .site-header::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: var(--ink);
+    filter: url(#sketch-soft);
+    pointer-events: none;
+    opacity: 0.55;
+  }
+  .site-header{
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    padding: 14px 18px;
+  }
+  
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+    color: var(--text);
+    font-weight: 700;
+  }
+  .brand-mark{
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    display:grid;
+    place-items:center;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+    font-size: 14px;
+    letter-spacing: .5px;
+  }
+  .brand-text{ opacity: .95; }
+  
+  .nav{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+  }
+  .nav-links{
+    display:flex;
+    align-items:center;
+    gap: 14px;
+  }
+  .nav-links a{
+    color: var(--muted);
+    text-decoration:none;
+    font-weight: 700;
+    padding: 6px 10px;
+    border-radius: 6px;
+    position: relative;
+  }
+  .nav-links a:hover{
+    color: var(--text);
+  }
+  .nav-links a[aria-current="page"]{
+    color: var(--text);
+  }
+  .nav-links a[aria-current="page"]::before{
+    content: "";
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    height: 2px;
+    background: var(--accent2);
+    filter: url(#sketch-soft);
+    pointer-events: none;
+  }
+  
+  .icon-btn{
+    position: relative;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-weight: 700;
+  }
+  .icon-btn::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 2px solid currentColor;
+    border-radius: inherit;
+    filter: url(#sketch-soft);
+    pointer-events: none;
+    opacity: 0.7;
+  }
+  .icon-btn:hover{ transform: translateY(-1px); }
+  
+  
+  /* Mobile nav */
+  .hamburger{
+    display:inline-block;
+    width: 18px; height: 2px;
+    background: var(--text);
+    position: relative;
+  }
+  .hamburger::before, .hamburger::after{
+    content:"";
+    position:absolute; left:0;
+    width: 18px; height: 2px;
+    background: var(--text);
+  }
+  .hamburger::before{ top:-6px; }
+  .hamburger::after{ top: 6px; }
+  
+  .section{
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 56px 18px;
+  }
+  .section-head{
+    margin-bottom: 18px;
+  }
+  .section-head h2{
+    margin: 0 0 6px;
+    font-size: 42px;
+  }
+  .section-head p{
+    margin: 0;
+    color: var(--muted);
+    font-size: 17px;
+  }
+  
+  .hero{
+    display:grid;
+    grid-template-columns: 1.3fr 0.7fr;
+    gap: 18px;
+    padding-top: 44px;
+  }
+  .hero.hero--simple{
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding-top: 72px;
+    padding-bottom: 72px;
+    max-width: 780px;
+  }
+  .hero.hero--simple .cta-row{
+    justify-content: center;
+  }
+  .hero.hero--simple .profile-image{
+    display: inline-block; /* centered by the hero's text-align: center */
+  }
+  .tag{
+    position: relative;
+    display: inline-flex;
+    padding: 6px 14px;
+    border: none;
+    background: transparent;
+    border-radius: 999px;
+    color: var(--text);
+    font-weight: 700;
+    letter-spacing: .3px;
+    margin: 0 0 14px;
+  }
+  .tag::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 2px solid currentColor;
+    border-radius: inherit;
+    filter: url(#sketch-soft);
+    pointer-events: none;
+    opacity: 0.75;
+  }
+  .title{
+    margin: 0 0 10px;
+    font-size: clamp(44px, 6vw, 72px);
+    line-height: 1.02;
+  }
+  .accent{
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    -webkit-background-clip: text;
+    background-clip:text;
+    color: transparent;
+  }
+  .subtitle{
+    margin: 0 0 18px;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.5;
+    max-width: 62ch;
+  }
+  
+  .cta-row{
+    display:flex;
+    gap:10px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  
+  .btn{
+    position: relative;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration:none;
+    font-weight: 700;
+    font-size: 16px;
+    display:inline-flex;
+    align-items:center;
+    gap: 8px;
+    cursor:pointer;
+  }
+  .btn::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 2px solid currentColor;
+    border-radius: inherit;
+    filter: url(#sketch-soft);
+    pointer-events: none;
+  }
+  .btn:hover{ transform: translateY(-1px); }
+  .btn.primary{
+    color: var(--accent2);
+  }
+  .btn.primary::before{
+    border-width: 2.5px;
+  }
+  .btn.ghost{
+    opacity: .8;
+  }
+
+  .quick-facts{
+    display:grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: 10px;
+  }
+  .fact{
+    position: relative;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    padding: 14px;
+  }
+  .fact::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 2px solid var(--ink);
+    border-radius: inherit;
+    filter: url(#sketch);
+    pointer-events: none;
+    opacity: 0.65;
+  }
+  .fact-label{
+    display:block;
+    color: var(--muted);
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .fact-value{
+    font-weight: 700;
+    font-size: 17px;
+  }
+
+  .card{
+    position: relative;
+    border: none;
+    background: #ffffff;
+    color: #1a1d26;
+    border-radius: 6px;
+    padding: 20px;
+    box-shadow:
+      3px 4px 0 rgba(26,29,38,0.10),
+      0 14px 30px rgba(0,0,0,0.22);
+  }
+  .card::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 2px solid var(--pencil);
+    border-radius: inherit;
+    filter: url(#sketch);
+    pointer-events: none;
+  }
+  /* Pinned-note feel: alternate a tiny rotation so stacked cards don't line up. */
+  .grid > .card:nth-child(odd){ transform: rotate(-0.35deg); }
+  .grid > .card:nth-child(even){ transform: rotate(0.35deg); }
+  .tl-item:nth-child(odd) .tl-card{ transform: rotate(-0.3deg); }
+  .tl-item:nth-child(even) .tl-card{ transform: rotate(0.25deg); }
+  /* Keep card contents readable against the opaque white bg regardless of theme */
+  .card h1,
+  .card h2,
+  .card h3,
+  .card h4,
+  .card h5{ color: #0b0d12; }
+  .card p{ color: #1a1d26; }
+  .card strong{ color: #0b0d12; }
+  .card .list{ color: #3d4455; }
+  .card .list strong{ color: #0b0d12; }
+  .card .mini{ color: #3d4455; }
+  .card .mini strong{ color: #0b0d12; }
+  .card .muted{ color: #5a6170; }
+  .card .link{ color: #0b0d12; }
+  .card .link:hover{ color: var(--accent); }
+  .card .badge{
+    color: #1a1d26;
+  }
+  .card .badge::before{
+    border-color: var(--pencil);
+  }
+  .card .inline-btn{ color: #0b0d12; }
+  .card .toast{ color: var(--accent); }
+  .card .field span{ color: #5a6170; }
+  .card input,
+  .card textarea{
+    background: #ffffff;
+    border: 2px solid var(--pencil);
+    color: #1a1d26;
+  }
+  .card input:focus,
+  .card textarea:focus{
+    outline: none;
+    border-color: var(--accent2);
+    box-shadow: 2px 2px 0 rgba(245,127,32,0.2);
+  }
+  
+  .hero-card{
+    display:flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .avatar{
+    width: 64px; height: 64px;
+    border-radius: 22px;
+    display:grid;
+    place-items:center;
+    font-size: 28px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+  }
+  .card-title{
+    margin: 0 0 8px;
+    font-size: 18px;
+  }
+  .list{
+    margin: 0;
+    padding-left: 18px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+  .list strong{ color: var(--text); }
+  
+  .grid{
+    display:grid;
+    gap: 14px;
+  }
+  .grid.two{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .grid.three{ grid-template-columns: repeat(3, minmax(0,1fr)); }
+  
+  .filters{
+    display:flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 16px 0;
+  }
+  .chip{
+    position: relative;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    padding: 6px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .chip::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 2px solid currentColor;
+    border-radius: inherit;
+    filter: url(#sketch-soft);
+    pointer-events: none;
+    opacity: 0.7;
+  }
+  .chip.is-active{
+    color: var(--accent2);
+  }
+  .chip.is-active::before{
+    opacity: 1;
+    border-width: 2.5px;
+  }
+  
+  .project-top{
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .pill{
+    position: relative;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--accent2);
+    background: transparent;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 999px;
+  }
+  .pill::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 2px solid currentColor;
+    border-radius: inherit;
+    filter: url(#sketch-soft);
+    pointer-events: none;
+  }
+  
+  .mini{
+    margin: 10px 0 0;
+    padding-left: 18px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .card-actions{
+    display:flex;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .link{
+    color: var(--text);
+    text-decoration:none;
+    font-weight: 900;
+    opacity: .9;
+  }
+  .link:hover{
+    text-decoration: underline;
+  }
+  
+  .timeline{
+    display:grid;
+    gap: 14px;
+  }
+  .timeline-top{
+    display:flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  /* ===== Unified timeline (experience / education / skills) ===== */
+  .tl{
+    position: relative;
+    margin-top: 8px;
+  }
+  /* Continuous vertical rail; sits behind the dots */
+  .tl::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 172px;              /* 140 date col + 18 gap + 14 (half of 28 marker col) */
+    width: 2px;
+    margin-left: -1px;
+    background: linear-gradient(
+      to bottom,
+      transparent 0,
+      rgba(245,127,32,0.55) 6%,
+      rgba(122,29,42,0.45) 94%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+  .tl-group-title,
+  .group-title{
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 900;
+    color: var(--text);
+    margin: 30px 0 14px;
+  }
+  .tl-group-title{
+    padding-left: 206px;       /* aligns with card column inside .tl */
+  }
+  .tl-group-title:first-child{ margin-top: 4px; }
+
+  .tl-item{
+    display: grid;
+    grid-template-columns: 140px 28px 1fr;
+    gap: 18px;
+    align-items: start;
+    position: relative;
+    padding-bottom: 22px;
+  }
+  .tl-item:last-child{ padding-bottom: 4px; }
+  .tl-date{
+    color: var(--muted);
+    font-weight: 800;
+    font-size: 13px;
+    text-align: right;
+    padding-top: 16px;
+    line-height: 1.4;
+  }
+  .tl-marker{
+    position: relative;
+    align-self: stretch;
+    min-height: 40px;
+  }
+  .tl-dot{
+    position: absolute;
+    left: 50%;
+    top: 18px;
+    width: 16px;
+    height: 16px;
+    margin-left: -8px;
+    border-radius: 50%;
+    background: var(--accent2);
+    box-shadow:
+      0 0 0 3px rgba(245,127,32,0.15),
+      0 6px 18px rgba(122,29,42,0.25);
+    filter: url(#sketch-soft);
+    z-index: 1;
+  }
+  .tl-card{ margin: 0; }
+  .tl-card h3{ margin-top: 0; margin-bottom: 6px; }
+  .tl-sub{
+    color: #5a6170;
+    font-weight: 700;
+    margin: 0 0 10px;
+    font-size: 14px;
+  }
+  .tl-card .list,
+  .tl-card p:last-child{ margin-bottom: 0; }
+
+  @media (max-width: 780px){
+    .tl::before{ left: 16px; }
+    .tl-group-title{ padding-left: 40px; margin-top: 24px; }
+    .group-title{ margin-top: 24px; }
+    .tl-item{
+      grid-template-columns: 32px 1fr;
+      grid-template-rows: auto auto;
+      gap: 4px 14px;
+      padding-bottom: 20px;
+    }
+    .tl-marker{ grid-column: 1; grid-row: 1 / span 2; min-height: 0; }
+    .tl-date{
+      grid-column: 2;
+      grid-row: 1;
+      text-align: left;
+      padding-top: 2px;
+    }
+    .tl-card{ grid-column: 2; grid-row: 2; }
+    .tl-dot{ left: 16px; top: 4px; }
+  }
+  .muted{
+    color: var(--muted);
+  }
+  
+  .badges{
+    display:flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .badge{
+    position: relative;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .badge::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1.75px solid currentColor;
+    border-radius: inherit;
+    filter: url(#sketch-soft);
+    pointer-events: none;
+    opacity: 0.8;
+  }
+  
+  .field{
+    display:grid;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .field span{
+    color: var(--muted);
+    font-weight: 800;
+    font-size: 13px;
+  }
+  input, textarea{
+    width: 100%;
+    border-radius: 6px;
+    border: 2px solid var(--ink-soft);
+    background: rgba(255,255,255,0.03);
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    outline: none;
+  }
+  input:focus, textarea:focus{
+    border-color: rgba(245,127,32,0.55);
+    box-shadow: 0 0 0 4px rgba(245,127,32,0.12);
+  }
+  
+  .form-row{
+    display:flex;
+    align-items:center;
+    gap: 12px;
+  }
+  
+  .inline-btn{
+    border: none;
+    background: none;
+    color: var(--text);
+    font-weight: 900;
+    cursor: pointer;
+    padding: 0;
+  }
+  .inline-btn:hover{ text-decoration: underline; }
+  
+  .toast{
+    margin-left: 10px;
+    color: var(--accent2);
+    font-weight: 900;
+  }
+  
+  .footer{
+    position: relative;
+    border-top: none;
+    padding: 22px 18px;
+    color: var(--muted);
+    text-align:center;
+  }
+  .footer::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: var(--ink);
+    filter: url(#sketch-soft);
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  
+  /* About split (bio on left, photo on right) */
+  .about-split{
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 18px;
+    align-items: stretch;
+    margin-bottom: 14px;
+  }
+  .about-photo{
+    margin: 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    background: rgba(255,255,255,0.03);
+    min-height: 320px;
+  }
+  .about-photo img{
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Responsive */
+  @media (max-width: 860px){
+    .hero{ grid-template-columns: 1fr; }
+    .grid.two{ grid-template-columns: 1fr; }
+    .grid.three{ grid-template-columns: 1fr; }
+    .quick-facts{ grid-template-columns: 1fr; }
+    .about-split{ grid-template-columns: 1fr; }
+    .about-photo{ min-height: 0; }
+    .about-photo img{ aspect-ratio: 4 / 5; height: auto; }
+  
+    .nav-links{
+      position: absolute;
+      top: 62px;
+      right: 14px;
+      flex-direction: column;
+      align-items: stretch;
+      width: 200px;
+      padding: 10px;
+      border-radius: 6px;
+      border: 2px solid var(--ink);
+      background: rgba(253,249,236,0.96);
+      box-shadow: 3px 4px 0 rgba(26,29,38,0.18);
+      display: none;
+    }
+    .nav-links[data-open="true"]{ display:flex; }
+  }
+
+  /* ============================================================
+     Page transitions: enter on load, exit on internal nav click.
+     Uses the `translate` property (not `transform`) so card rotations
+     from `transform: rotate(...)` are preserved — browsers compose the
+     two independently. Stagger is done via nth-child delays.
+     ============================================================ */
+  :root{
+    --pe-enter-dur: 500ms;
+    --pe-exit-dur: 260ms;
+    --pe-ease: cubic-bezier(.25,.7,.25,1);
+    --pe-ease-out: cubic-bezier(.4,0,.6,1);
+  }
+
+  @keyframes pe-enter{
+    from{ opacity: 0; translate: 0 28px; }
+    to  { opacity: 1; translate: 0 0; }
+  }
+  @keyframes pe-leave{
+    from{ opacity: 1; translate: 0 0; }
+    to  { opacity: 0; translate: 0 -28px; }
+  }
+
+  /* Enter — runs automatically on every page load */
+  main > section > *,
+  .hero-content > *,
+  .grid > *,
+  .tl-item,
+  .filters,
+  .quick-facts,
+  .tl-group-title,
+  .group-title{
+    animation: pe-enter var(--pe-enter-dur) var(--pe-ease) both;
+  }
+
+  /* Top-level section children stagger */
+  main > section > *:nth-child(1){ animation-delay: 0ms; }
+  main > section > *:nth-child(2){ animation-delay: 60ms; }
+  main > section > *:nth-child(3){ animation-delay: 120ms; }
+  main > section > *:nth-child(4){ animation-delay: 180ms; }
+  main > section > *:nth-child(5){ animation-delay: 240ms; }
+  main > section > *:nth-child(6){ animation-delay: 300ms; }
+
+  /* Stagger inside the hero (tag → title → ctas) */
+  .hero-content > *:nth-child(1){ animation-delay: 40ms; }
+  .hero-content > *:nth-child(2){ animation-delay: 120ms; }
+  .hero-content > *:nth-child(3){ animation-delay: 200ms; }
+  .hero-content > *:nth-child(4){ animation-delay: 280ms; }
+
+  /* Grid cards stagger after their parent's entry */
+  .grid > *:nth-child(1){ animation-delay: 160ms; }
+  .grid > *:nth-child(2){ animation-delay: 220ms; }
+  .grid > *:nth-child(3){ animation-delay: 280ms; }
+  .grid > *:nth-child(4){ animation-delay: 340ms; }
+  .grid > *:nth-child(5){ animation-delay: 400ms; }
+
+  /* Timeline items stagger */
+  .tl-item:nth-child(1){ animation-delay: 120ms; }
+  .tl-item:nth-child(2){ animation-delay: 180ms; }
+  .tl-item:nth-child(3){ animation-delay: 240ms; }
+  .tl-item:nth-child(4){ animation-delay: 300ms; }
+  .tl-item:nth-child(5){ animation-delay: 360ms; }
+  .tl-item:nth-child(6){ animation-delay: 420ms; }
+  .tl-item:nth-child(7){ animation-delay: 480ms; }
+
+  /* Exit — JS adds .is-leaving on <body> before navigating away */
+  body.is-leaving main > section > *,
+  body.is-leaving .hero-content > *,
+  body.is-leaving .grid > *,
+  body.is-leaving .tl-item,
+  body.is-leaving .filters,
+  body.is-leaving .quick-facts,
+  body.is-leaving .tl-group-title,
+  body.is-leaving .group-title{
+    animation: pe-leave var(--pe-exit-dur) var(--pe-ease-out) both;
+  }
+
+  /* Exits are quicker than enters — shorter stagger top-to-bottom */
+  body.is-leaving main > section > *:nth-child(1){ animation-delay: 0ms; }
+  body.is-leaving main > section > *:nth-child(2){ animation-delay: 30ms; }
+  body.is-leaving main > section > *:nth-child(3){ animation-delay: 60ms; }
+  body.is-leaving main > section > *:nth-child(4){ animation-delay: 90ms; }
+  body.is-leaving main > section > *:nth-child(5){ animation-delay: 120ms; }
+
+  body.is-leaving .hero-content > *:nth-child(1){ animation-delay: 0ms; }
+  body.is-leaving .hero-content > *:nth-child(2){ animation-delay: 30ms; }
+  body.is-leaving .hero-content > *:nth-child(3){ animation-delay: 60ms; }
+  body.is-leaving .hero-content > *:nth-child(4){ animation-delay: 90ms; }
+
+  body.is-leaving .grid > *:nth-child(1){ animation-delay: 0ms; }
+  body.is-leaving .grid > *:nth-child(2){ animation-delay: 30ms; }
+  body.is-leaving .grid > *:nth-child(3){ animation-delay: 60ms; }
+  body.is-leaving .grid > *:nth-child(4){ animation-delay: 90ms; }
+  body.is-leaving .grid > *:nth-child(5){ animation-delay: 120ms; }
+
+  body.is-leaving .tl-item:nth-child(1){ animation-delay: 0ms; }
+  body.is-leaving .tl-item:nth-child(2){ animation-delay: 30ms; }
+  body.is-leaving .tl-item:nth-child(3){ animation-delay: 60ms; }
+  body.is-leaving .tl-item:nth-child(4){ animation-delay: 90ms; }
+  body.is-leaving .tl-item:nth-child(5){ animation-delay: 120ms; }
+  body.is-leaving .tl-item:nth-child(6){ animation-delay: 150ms; }
+  body.is-leaving .tl-item:nth-child(7){ animation-delay: 180ms; }
+
+  /* ---- Handwriting / pen-reveal animation for text ----
+     Uses clip-path to wipe the element from left→right, like a pen drawing
+     across the page. Applied to headings, labels, and the hero title so the
+     handwritten font reads like it's actually being written as the page enters.
+     Sits on top of the container-level pe-enter animation: containers slide up,
+     the text on them gets "written" as they settle. */
+  @keyframes pe-write{
+    0%   { opacity: 0; clip-path: inset(-6% 102% -6% -6%); }
+    10%  { opacity: 1; }
+    100% { opacity: 1; clip-path: inset(-6% -6% -6% -6%); }
+  }
+
+  .section-head h2,
+  .section-head p,
+  .hero .title,
+  .hero .tag,
+  .card > h3,
+  .tl-card > h3,
+  .tl-group-title,
+  .group-title{
+    animation: pe-write 1200ms cubic-bezier(.35,.65,.35,1) both;
+  }
+
+  /* JS-created line wrappers — each line writes in sequence.
+     `--pe-delay` is set on the parent from its original animation-delay so
+     line 0 starts at the same time the element was going to write, then each
+     subsequent line waits LINE_GAP (see script.js LINE_GAP_MS) more. */
+  .pe-split{
+    animation: none !important;
+    clip-path: none !important;
+    opacity: 1 !important;
+  }
+  .pe-line{
+    display: block;
+    animation: pe-write 1100ms cubic-bezier(.35,.65,.35,1) both;
+    animation-delay: calc(var(--pe-delay, 0ms) + var(--line-idx, 0) * 700ms);
+  }
+  body.is-leaving .pe-split{
+    animation: pe-leave var(--pe-exit-dur) var(--pe-ease-out) both !important;
+    animation-delay: 0ms !important;
+    opacity: 1;
+  }
+
+  /* Text delays — start writing slightly AFTER the container arrives so the
+     effect is "page slides in, then pen writes on it" rather than both at once. */
+  .section-head h2{ animation-delay: 120ms; }
+  .section-head p { animation-delay: 340ms; }
+  .hero .tag     { animation-delay: 120ms; }
+  .hero .title   { animation-delay: 280ms; }
+  .tl-group-title,
+  .group-title   { animation-delay: 200ms; }
+  .card > h3,
+  .tl-card > h3  { animation-delay: 300ms; }
+
+  /* Exit: text participates in the standard fade-up leave animation. This
+     overrides pe-write while .is-leaving is active so the clip-path doesn't
+     get stuck at "fully written" while the element is trying to fade out. */
+  body.is-leaving .section-head h2,
+  body.is-leaving .section-head p,
+  body.is-leaving .hero .title,
+  body.is-leaving .hero .tag,
+  body.is-leaving .card > h3,
+  body.is-leaving .tl-card > h3,
+  body.is-leaving .tl-group-title,
+  body.is-leaving .group-title{
+    animation: pe-leave var(--pe-exit-dur) var(--pe-ease-out) both;
+    animation-delay: 0ms;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    main > section > *,
+    .hero-content > *,
+    .grid > *,
+    .tl-item,
+    .filters,
+    .quick-facts,
+    .tl-group-title,
+    .group-title,
+    .section-head h2,
+    .section-head p,
+    .hero .title,
+    .hero .tag,
+    .card > h3,
+    .tl-card > h3,
+    body.is-leaving main > section > *,
+    body.is-leaving .hero-content > *,
+    body.is-leaving .grid > *,
+    body.is-leaving .tl-item,
+    body.is-leaving .section-head h2,
+    body.is-leaving .section-head p,
+    body.is-leaving .hero .title,
+    body.is-leaving .hero .tag,
+    body.is-leaving .card > h3,
+    body.is-leaving .tl-card > h3{
+      animation: none !important;
+    }
+  }
+
+  /* ===== Sketchbook doodles =====
+     JS injects <img class="doodle"> elements before <main> with inline top/
+     left-right/width/rotate values plus a per-doodle --doodle-delay so they
+     appear in sequence. The `doodle-in` keyframe clips the image from the
+     right, matching the same left→right "pen sweep" used by pe-write on
+     headings, so each doodle reads as being sketched onto the paper. */
+  .doodle{
+    position: absolute;
+    max-width: 42vw;
+    height: auto;
+    opacity: 0;
+    pointer-events: none;
+    user-select: none;
+    animation: doodle-in 1500ms cubic-bezier(.35,.7,.35,1) var(--doodle-delay, 600ms) both;
+  }
+  @keyframes doodle-in{
+    0%   { opacity: 0;    clip-path: inset(-8% 104% -8% -8%); translate: 0 10px; }
+    25%  { opacity: 0.45; }
+    100% { opacity: 0.45; clip-path: inset(-8% -8% -8% -8%);  translate: 0 0; }
+  }
+  body.is-leaving .doodle{
+    animation: doodle-out 260ms cubic-bezier(.4,0,.6,1) both;
+    animation-delay: 0ms;
+  }
+  @keyframes doodle-out{
+    from{ opacity: 0.45; }
+    to  { opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .doodle{ animation: none; opacity: 0.45; clip-path: none; }
+    body.is-leaving .doodle{ animation: none; opacity: 0; }
+  }
+  @media (max-width: 640px){
+    .doodle{ max-width: 55vw; }
+  }
