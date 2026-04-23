@@ -865,6 +865,39 @@
     pointer-events: none;
     opacity: 0.5;
   }
+
+  /* Social sketch-logo buttons in the footer — external links that open in a
+     new tab. The icons hop and brighten on hover. */
+  .footer-socials{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .footer-socials a{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 220ms cubic-bezier(.35,.7,.35,1);
+  }
+  .footer-socials a:hover,
+  .footer-socials a:focus-visible{
+    transform: translateY(-3px) rotate(-2deg);
+    outline: none;
+  }
+  .footer-socials img{
+    display: block;
+    height: 52px;
+    width: auto;
+    opacity: 0.8;
+    transition: opacity 200ms ease;
+  }
+  .footer-socials a:hover img,
+  .footer-socials a:focus-visible img{
+    opacity: 1;
+  }
   
   /* About split (bio on left, photo on right) */
   .about-split{
