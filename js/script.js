@@ -421,7 +421,7 @@ if (progress) {
       const side = Math.random() < 0.5 ? "left" : "right";
       const offset = Math.floor(8 + Math.random() * 130);   // 8–138 px
       const width = 200 + Math.floor(Math.random() * 120);  // 200–320 px
-      const rot = Math.random() * 28 - 14;                  // -14 → +14 deg
+      const rot = Math.random() * 8 - 4;                    // -4 → +4 deg (subtle tilt)
       const delay = 700 + i * 500 + Math.floor(Math.random() * 200);
 
       // Approximate bounding box. Sketches are roughly square, so est. height

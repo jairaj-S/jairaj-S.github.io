@@ -140,7 +140,7 @@
   }
   .profile-sketch{
     display: block;
-    height: 150px;         /* match the framed photo's height */
+    height: 300px;         /* match the framed photo's height */
     width: auto;
     /* Fade in once the PNG has decoded so it doesn't pop in late and out of
        sync with the photo or the writing animation. */
@@ -150,7 +150,7 @@
   .profile-sketch.is-loaded{ opacity: 1; }
   @media (max-width: 640px){
     .profile-row{ flex-wrap: wrap; justify-content: center; gap: 12px; }
-    .profile-sketch{ height: 120px; }
+    .profile-sketch{ height: 150px; }
   }
 
   .profile-image {
@@ -162,7 +162,7 @@
   }
   .profile-image img {
     display: block;
-    height: 150px;
+    height: 300px;
     width: auto;
     border-radius: 4px;
     position: relative;
@@ -604,11 +604,49 @@
     border-width: 2.5px;
   }
   
+  /* Title row: small square thumbnail | title | category pill (pushed right) */
   .project-top{
-    display:flex;
-    align-items:center;
-    justify-content: space-between;
-    gap: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .project-top h3{ margin: 0; min-width: 0; }
+  .project-top .pill{ margin-left: auto; flex-shrink: 0; }
+
+  /* Project thumbnail — small square next to the title. object-fit: cover so
+     the square crops cleanly regardless of the source image aspect ratio. */
+  .project-thumb{
+    display: block;
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    background: rgba(15,18,26,0.05);
+    border: 1px solid rgba(15,18,26,0.15);
+  }
+  .project-thumb img{
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Logo thumbnail variant — used for institutional logos / seals next to a
+     card title. No frame/background, contains rather than crops, so the full
+     mark is preserved. Slightly larger than .project-thumb because seals carry
+     fine detail that benefits from extra pixels. */
+  .logo-thumb{
+    display: block;
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+  }
+  .logo-thumb img{
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
   .pill{
     position: relative;
