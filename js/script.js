@@ -310,7 +310,7 @@ if (progress) {
 })();
 
 // ===== Sketchbook doodles =====
-// Scatters transparent PNG sketches from images/transparent_images/ behind
+// Scatters transparent PNG sketches from images/doodles/ behind
 // the main content. Two collision concerns are enforced by rejection
 // sampling (each candidate position must pass both before it's kept):
 //
@@ -452,7 +452,7 @@ if (progress) {
   doodles.forEach((d) => {
     const img = document.createElement("img");
     img.className = "doodle";
-    img.src = `images/transparent_images/${encodeURIComponent(d.name)}.png`;
+    img.src = `images/doodles/${encodeURIComponent(d.name)}.png`;
     img.alt = "";
     img.setAttribute("aria-hidden", "true");
     img.loading = "lazy";
